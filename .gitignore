@@ -1,0 +1,10 @@
+# Godot-specific temporary and cache files
+.godot/
+*.translation
+
+# Export and hardware configurations 
+export_credentials.cfg
+
+# Binary build outputs
+build/
+bin/
