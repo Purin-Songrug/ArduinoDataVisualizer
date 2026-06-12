@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsv1ioeqiyp46"]
+
+[ext_resource type="Theme" path="res://minimal_theme.tres" id="1_3noy7"]
+[ext_resource type="Script" uid="uid://bbttqd7jrr8tr" path="res://main.gd" id="1_fajhy"]
+
+[node name="SerialMonitor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_3noy7")
+script = ExtResource("1_fajhy")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="Panel" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="PortSelector" type="OptionButton" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BaudSelector" type="LineEdit" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+placeholder_text = "Baud Rate
+"
+emoji_menu_enabled = false
+virtual_keyboard_type = 2
+
+[node name="ConnectButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Connect"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OutputLabel" type="Label" parent="PanelContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[connection signal="text_changed" from="PanelContainer/VBoxContainer/HBoxContainer/BaudSelector" to="." method="_on_baud_selector_text_changed"]

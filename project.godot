@@ -8,15 +8,29 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="ArduinoDataVisualizer"
-config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="res://icon.svg"
+run/main_scene="uid://dsv1ioeqiyp46"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+
+[display]
+
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdserial/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdserial/plugin.cfg", "res://addons/graph_2d/plugin.cfg", "res://addons/tau-plot/plugin.cfg")
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
 
 [rendering]
 

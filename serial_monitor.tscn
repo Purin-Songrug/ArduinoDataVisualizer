@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://dsv1ioeqiyp46"]
+
+[ext_resource type="Theme" uid="uid://kest7sm37whx" path="res://clean_dark.tres" id="1_3noy7"]
+[ext_resource type="Script" uid="uid://bbttqd7jrr8tr" path="res://main.gd" id="1_fajhy"]
+[ext_resource type="Script" uid="uid://dsvbc2a2odwn5" path="res://addons/graph_2d/graph_2d.gd" id="3_mfei3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mfei3"]
+font_size = 22
+
+[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "output_label", "scroll_container", "x_axis_mover", "graph_2d")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_3noy7")
+script = ExtResource("1_fajhy")
+port_selector = NodePath("Background/Main VBox/HUD/PortSelector")
+baud_selector = NodePath("Background/Main VBox/HUD/BaudSelector")
+connect_button = NodePath("Background/Main VBox/HUD/ConnectButton")
+output_label = NodePath("Background/Main VBox/Output/OutputLabel")
+scroll_container = NodePath("Background/Main VBox/Output")
+x_axis_mover = NodePath("Background/Main VBox/XAxis Mover")
+graph_2d = NodePath("Background/Main VBox/Graph2D")
+
+[node name="Background" type="PanelContainer" parent="." unique_id=265731959]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Main VBox" type="VBoxContainer" parent="Background" unique_id=523907405]
+layout_mode = 2
+
+[node name="HUD" type="HBoxContainer" parent="Background/Main VBox" unique_id=1122958591]
+layout_mode = 2
+alignment = 2
+
+[node name="Title" type="Label" parent="Background/Main VBox/HUD" unique_id=1928391465]
+layout_mode = 2
+text = "Arduino Serial Data Visualizer"
+label_settings = SubResource("LabelSettings_mfei3")
+
+[node name="Space" type="CenterContainer" parent="Background/Main VBox/HUD" unique_id=1169588903]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PortSelector" type="OptionButton" parent="Background/Main VBox/HUD" unique_id=1764632016]
+layout_mode = 2
+
+[node name="BaudSelector" type="LineEdit" parent="Background/Main VBox/HUD" unique_id=292087544]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+placeholder_text = "Baud Rate
+"
+emoji_menu_enabled = false
+virtual_keyboard_type = 2
+
+[node name="ConnectButton" type="Button" parent="Background/Main VBox/HUD" unique_id=27421537]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Connect"
+
+[node name="HSeparator" type="HSeparator" parent="Background/Main VBox" unique_id=1556082565]
+layout_mode = 2
+
+[node name="Graph2D" type="Control" parent="Background/Main VBox" unique_id=1793153638]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_mfei3")
+x_label = "Time"
+y_max = 1200.0
+y_label = "Reading"
+background_color = Color(0, 0, 0, 0)
+grid_horizontal_visible = true
+grid_vertical_visible = true
+metadata/_custom_type_script = "uid://dsvbc2a2odwn5"
+
+[node name="XAxis Mover" type="HScrollBar" parent="Background/Main VBox" unique_id=1941642243]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10.0
+step = 2.0
+value = 10.0
+rounded = true
+
+[node name="HSeparator2" type="HSeparator" parent="Background/Main VBox" unique_id=443476526]
+layout_mode = 2
+
+[node name="Output" type="ScrollContainer" parent="Background/Main VBox" unique_id=56392274]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="OutputLabel" type="Label" parent="Background/Main VBox/Output" unique_id=1173963582]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[connection signal="text_changed" from="Background/Main VBox/HUD/BaudSelector" to="." method="_on_baud_selector_text_changed"]
+[connection signal="value_changed" from="Background/Main VBox/XAxis Mover" to="." method="_on_x_axis_mover_value_changed"]
