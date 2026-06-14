@@ -3,11 +3,31 @@
 [ext_resource type="Theme" uid="uid://kest7sm37whx" path="res://clean_dark.tres" id="1_3noy7"]
 [ext_resource type="Script" uid="uid://bbttqd7jrr8tr" path="res://main.gd" id="1_fajhy"]
 [ext_resource type="Script" uid="uid://dsvbc2a2odwn5" path="res://addons/graph_2d/graph_2d.gd" id="3_mfei3"]
+[ext_resource type="PackedScene" uid="uid://d1vyb0a6uehvp" path="res://Instantiates/macro_edit.tscn" id="4_5cm5u"]
+[ext_resource type="PackedScene" uid="uid://dyety4dpsq0b2" path="res://Instantiates/macro_button.tscn" id="5_qdran"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mfei3"]
+font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_5cm5u"]
+font_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_qdran"]
 font_size = 22
 
-[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "output_label", "scroll_container", "x_axis_mover", "graph_2d")]
+[sub_resource type="LabelSettings" id="LabelSettings_x5bcq"]
+font_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mfei3"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5cm5u"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tuj7s"]
+font_size = 22
+
+[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "x_axis_mover", "graph_2d", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,10 +41,23 @@ script = ExtResource("1_fajhy")
 port_selector = NodePath("Background/Main VBox/HUD/PortSelector")
 baud_selector = NodePath("Background/Main VBox/HUD/BaudSelector")
 connect_button = NodePath("Background/Main VBox/HUD/ConnectButton")
-output_label = NodePath("Background/Main VBox/Output/OutputLabel")
-scroll_container = NodePath("Background/Main VBox/Output")
-x_axis_mover = NodePath("Background/Main VBox/XAxis Mover")
-graph_2d = NodePath("Background/Main VBox/Graph2D")
+refresh_button = NodePath("Background/Main VBox/HUD/Refresh Button")
+output_label = NodePath("Background/Main VBox/Middle Split/Graph & Output/Output/OutputLabel")
+scroll_container = NodePath("Background/Main VBox/Middle Split/Graph & Output/Output")
+output_resizer = NodePath("Background/Main VBox/Middle Split/Graph & Output/Output Sizing/Output Resizer")
+x_axis_mover = NodePath("Background/Main VBox/Middle Split/Graph & Output/XAxis Mover")
+graph_2d = NodePath("Background/Main VBox/Middle Split/Graph & Output/Graph2D")
+sidebar = NodePath("Background/Main VBox/Middle Split/Sidebar")
+middleResizeButton = NodePath("Background/Main VBox/Middle Split/Separator/Middle Resize Button")
+macrosContainer = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros")
+macrosCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header/Collapse Macros Button")
+editMacrosButton = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header/Edit Macros Button")
+addMacroButton = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options/Macros Options Header/Add Macro Button")
+editMacrosContainer = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options")
+variablesContainer = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables")
+variablesCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables Header/Collapse Variables Button2")
+exportContainer = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export")
+exportCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export Header/Collapse Export Button3")
 
 [node name="Background" type="PanelContainer" parent="." unique_id=265731959]
 texture_filter = 1
@@ -53,6 +86,10 @@ label_settings = SubResource("LabelSettings_mfei3")
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="Refresh Button" type="Button" parent="Background/Main VBox/HUD" unique_id=1128332704]
+layout_mode = 2
+text = "⟳"
+
 [node name="PortSelector" type="OptionButton" parent="Background/Main VBox/HUD" unique_id=1764632016]
 layout_mode = 2
 
@@ -72,7 +109,17 @@ text = "Connect"
 [node name="HSeparator" type="HSeparator" parent="Background/Main VBox" unique_id=1556082565]
 layout_mode = 2
 
-[node name="Graph2D" type="Control" parent="Background/Main VBox" unique_id=1793153638]
+[node name="Middle Split" type="HBoxContainer" parent="Background/Main VBox" unique_id=1952096077]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Graph & Output" type="VBoxContainer" parent="Background/Main VBox/Middle Split" unique_id=1022363848]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Graph2D" type="Control" parent="Background/Main VBox/Middle Split/Graph & Output" unique_id=1793153638]
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("3_mfei3")
@@ -84,7 +131,7 @@ grid_horizontal_visible = true
 grid_vertical_visible = true
 metadata/_custom_type_script = "uid://dsvbc2a2odwn5"
 
-[node name="XAxis Mover" type="HScrollBar" parent="Background/Main VBox" unique_id=1941642243]
+[node name="XAxis Mover" type="HScrollBar" parent="Background/Main VBox/Middle Split/Graph & Output" unique_id=1941642243]
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -93,16 +140,210 @@ step = 2.0
 value = 10.0
 rounded = true
 
-[node name="HSeparator2" type="HSeparator" parent="Background/Main VBox" unique_id=443476526]
+[node name="Output Sizing" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Graph & Output" unique_id=430937545]
 layout_mode = 2
 
-[node name="Output" type="ScrollContainer" parent="Background/Main VBox" unique_id=56392274]
+[node name="HSeparator" type="HSeparator" parent="Background/Main VBox/Middle Split/Graph & Output/Output Sizing" unique_id=2115246617]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Output Resizer" type="Button" parent="Background/Main VBox/Middle Split/Graph & Output/Output Sizing" unique_id=1481890538]
+layout_mode = 2
+mouse_default_cursor_shape = 9
+
+[node name="HSeparator2" type="HSeparator" parent="Background/Main VBox/Middle Split/Graph & Output/Output Sizing" unique_id=505261729]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Output" type="ScrollContainer" parent="Background/Main VBox/Middle Split/Graph & Output" unique_id=56392274]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="OutputLabel" type="Label" parent="Background/Main VBox/Output" unique_id=1173963582]
+[node name="OutputLabel" type="Label" parent="Background/Main VBox/Middle Split/Graph & Output/Output" unique_id=1173963582]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+label_settings = SubResource("LabelSettings_5cm5u")
 
-[connection signal="text_changed" from="Background/Main VBox/HUD/BaudSelector" to="." method="_on_baud_selector_text_changed"]
-[connection signal="value_changed" from="Background/Main VBox/XAxis Mover" to="." method="_on_x_axis_mover_value_changed"]
+[node name="Messaging" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Graph & Output" unique_id=1992879066]
+layout_mode = 2
+
+[node name="Message Field" type="LineEdit" parent="Background/Main VBox/Middle Split/Graph & Output/Messaging" unique_id=1790880589]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Send Types" type="OptionButton" parent="Background/Main VBox/Middle Split/Graph & Output/Messaging" unique_id=949568171]
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "New Line"
+popup/item_0/id = 0
+popup/item_1/text = "No Line Ending"
+popup/item_1/id = 1
+popup/item_2/text = "Carriage Return"
+popup/item_2/id = 2
+popup/item_3/text = "Both NL & CR"
+popup/item_3/id = 3
+
+[node name="Send" type="Button" parent="Background/Main VBox/Middle Split/Graph & Output/Messaging" unique_id=2090548727]
+layout_mode = 2
+text = "Send"
+
+[node name="Separator" type="VBoxContainer" parent="Background/Main VBox/Middle Split" unique_id=1957240187]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="Background/Main VBox/Middle Split/Separator" unique_id=1495325532]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Middle Resize Button" type="Button" parent="Background/Main VBox/Middle Split/Separator" unique_id=1846529952]
+layout_mode = 2
+mouse_default_cursor_shape = 10
+text = "▶"
+
+[node name="VSeparator2" type="VSeparator" parent="Background/Main VBox/Middle Split/Separator" unique_id=89742438]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Sidebar" type="ScrollContainer" parent="Background/Main VBox/Middle Split" unique_id=1483579753]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+follow_focus = true
+vertical_scroll_mode = 4
+
+[node name="VBox Sidebar" type="VBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar" unique_id=1740080749]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Macros Header" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1706622887]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header" unique_id=460309784]
+layout_mode = 2
+text = "Macros"
+label_settings = SubResource("LabelSettings_qdran")
+
+[node name="CenterContainer" type="HSeparator" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header" unique_id=137664114]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Edit Macros Button" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header" unique_id=214747755]
+layout_mode = 2
+text = "✎"
+
+[node name="Collapse Macros Button" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Header" unique_id=1948069074]
+layout_mode = 2
+text = "▼"
+
+[node name="Macros Options" type="VBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1308141420]
+visible = false
+layout_mode = 2
+
+[node name="Macros Options Header" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options" unique_id=1811753713]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options/Macros Options Header" unique_id=1216797733]
+layout_mode = 2
+text = "Settings"
+
+[node name="CenterContainer" type="CenterContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options/Macros Options Header" unique_id=1909321124]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Add Macro Button" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options/Macros Options Header" unique_id=1120126814]
+layout_mode = 2
+text = "Add Macro"
+
+[node name="Macro Edit" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options" unique_id=937759578 node_paths=PackedStringArray("macro_container") instance=ExtResource("4_5cm5u")]
+layout_mode = 2
+macro_container = NodePath("../../Macros")
+
+[node name="Macro Edit2" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros Options" unique_id=1050733373 node_paths=PackedStringArray("macro_container") instance=ExtResource("4_5cm5u")]
+layout_mode = 2
+macro_container = NodePath("../../Macros")
+
+[node name="Macros" type="GridContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1167587683]
+layout_mode = 2
+columns = 2
+
+[node name="Macro Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros" unique_id=1642227233 instance=ExtResource("5_qdran")]
+layout_mode = 2
+
+[node name="Macro Button2" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Macros" unique_id=23139437 instance=ExtResource("5_qdran")]
+layout_mode = 2
+
+[node name="Variables Header" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=431538439]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables Header" unique_id=20837996]
+layout_mode = 2
+text = "Variables"
+label_settings = SubResource("LabelSettings_x5bcq")
+
+[node name="CenterContainer" type="HSeparator" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables Header" unique_id=27455880]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Collapse Variables Button2" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables Header" unique_id=74674759]
+layout_mode = 2
+text = "▼"
+
+[node name="Variables" type="VBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1894154112]
+layout_mode = 2
+
+[node name="Label" type="RichTextLabel" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Variables" unique_id=324365796]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mfei3")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5cm5u")
+bbcode_enabled = true
+text = "[i]No variables to display[/i]"
+
+[node name="Export Header" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1130738084]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export Header" unique_id=1916879966]
+layout_mode = 2
+text = "Export"
+label_settings = SubResource("LabelSettings_tuj7s")
+
+[node name="CenterContainer" type="HSeparator" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export Header" unique_id=1397727239]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Collapse Export Button3" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export Header" unique_id=992474509]
+layout_mode = 2
+text = "▼"
+
+[node name="Export" type="VBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar" unique_id=1028624674]
+layout_mode = 2
+
+[node name="Start Hbox" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export" unique_id=857498732]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export/Start Hbox" unique_id=1560753662]
+layout_mode = 2
+text = "Start:"
+
+[node name="Start Input" type="LineEdit" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export/Start Hbox" unique_id=728908729]
+layout_mode = 2
+
+[node name="Beginning Check" type="CheckButton" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export" unique_id=637847391]
+layout_mode = 2
+text = "Beginning"
+
+[node name="End Hbox" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export" unique_id=69858572]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export/End Hbox" unique_id=1079208788]
+layout_mode = 2
+text = "End:"
+
+[node name="End Input" type="LineEdit" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export/End Hbox" unique_id=1667022992]
+layout_mode = 2
+
+[node name="End Check" type="CheckButton" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export" unique_id=1669923076]
+layout_mode = 2
+text = "End"
+
+[node name="Export Button" type="Button" parent="Background/Main VBox/Middle Split/Sidebar/VBox Sidebar/Export" unique_id=269193179]
+layout_mode = 2
+text = "Export to CSV"
