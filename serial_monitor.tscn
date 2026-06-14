@@ -27,7 +27,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="LabelSettings" id="LabelSettings_tuj7s"]
 font_size = 22
 
-[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "y_min_input", "y_max_input", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton", "no_variables_text") groups=["Root"]]
+[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "y_min_input", "y_max_input", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton", "exportCSVButton", "exportStart", "exportEnd", "no_variables_text") groups=["Root"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,6 +63,9 @@ variablesContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/M
 variablesCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables Header/Collapse Variables Button2")
 exportContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export")
 exportCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export Header/Collapse Export Button3")
+exportCSVButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Export Button")
+exportStart = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Start Hbox/Start Input")
+exportEnd = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/End Hbox/End Input")
 no_variables_text = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables/Label")
 
 [node name="Background" type="PanelContainer" parent="." unique_id=265731959]
@@ -397,10 +400,6 @@ text = "Start:"
 [node name="Start Input" type="LineEdit" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Start Hbox" unique_id=728908729]
 layout_mode = 2
 
-[node name="Beginning Check" type="CheckBox" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export" unique_id=804595473]
-layout_mode = 2
-text = "Beginning"
-
 [node name="End Hbox" type="HBoxContainer" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export" unique_id=69858572]
 layout_mode = 2
 
@@ -410,10 +409,6 @@ text = "End:"
 
 [node name="End Input" type="LineEdit" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/End Hbox" unique_id=1667022992]
 layout_mode = 2
-
-[node name="End Check" type="CheckBox" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export" unique_id=624294959]
-layout_mode = 2
-text = "End"
 
 [node name="Export Button" type="Button" parent="Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export" unique_id=269193179]
 layout_mode = 2

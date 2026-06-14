@@ -41,6 +41,9 @@ var data
 @export var variablesCollapseButton: Button
 @export var exportContainer: VBoxContainer
 @export var exportCollapseButton: Button
+@export var exportCSVButton: Button
+@export var exportStart: LineEdit
+@export var exportEnd: LineEdit
 
 var sidebarVisible := true
 var macrosVisible := true
@@ -61,6 +64,9 @@ var graphed_variable_value: float
 
 #Pre-compile the regex once at the top of the script for maximum performance
 var packet_regex: RegEx = RegEx.new()
+
+var CSV_EXPORT: Array[Array] = [["Time","Raw Data"]]
+var CSV_PATH := "user://data.csv"
 
 func _ready() -> void:
 	serial = GdSerial.new()
@@ -86,7 +92,7 @@ func _ready() -> void:
 	macrosCollapseButton.pressed.connect(_on_collapse_macros_button_pressed)
 	editMacrosButton.pressed.connect(_on_edit_macros_button_pressed)
 	addMacroButton.pressed.connect(_on_add_macro_button_pressed)
-	
+	exportCSVButton.pressed.connect(_on_export_CSV_button_pressed)
 	variablesCollapseButton.pressed.connect(_on_collapse_variables_button_pressed)
 	exportCollapseButton.pressed.connect(_on_collapse_export_button_pressed)
 	
@@ -169,7 +175,7 @@ func _process(delta: float) -> void:
 		else:
 			data.add_point(Vector2(TIME, graphed_variable_value))
 			_append_to_terminal(str(graphed_variable_value))
-		_manage_variables(raw_data.strip_edges())
+		_manage_variables(raw_data.strip_edges(), TIME)
 		
 		TIME += delta
 		if TIME > graph_2d.x_max and x_axis_mover.value == x_axis_mover.max_value:
@@ -224,7 +230,7 @@ func _on_output_resizer_button_down() -> void:
 func _on_output_resizer_button_up() -> void:
 	is_dragging = false
 
-func _manage_variables(line: String) -> void:
+func _manage_variables(line: String, time: float) -> void:
 	#Clean up any hidden whitespace, carriage returns (\r), or newlines (\n)
 	line = line.strip_edges()
 
@@ -243,6 +249,19 @@ func _manage_variables(line: String) -> void:
 	if TRACKED_VARIABLES_NAMES.has(variable_name):
 		var variable_index = TRACKED_VARIABLES_NAMES.find(variable_name)
 		VARIABLE_INSTANCES[variable_index].get_child(0).text = set_text
+		
+		
+		var save_index = CSV_EXPORT[0].find(variable_name)
+		var append = []
+		append.append(time)
+		append.append(line)
+		for i in range(save_index-2):
+			append.append("")
+		append.append(variable_value)
+		for i in range(CSV_EXPORT[0].size()-save_index-1):
+			append.append("")
+		
+		CSV_EXPORT.append(append)
 	else:
 		print("Registered new variable: ", variable_name) 
 		
@@ -259,6 +278,8 @@ func _manage_variables(line: String) -> void:
 		data_chooser.selected = 1
 		graphed_variable_name = data_chooser.get_item_text(1)
 		
+		CSV_EXPORT[0].append(variable_name)
+		
 	if TRACKED_VARIABLES_NAMES.size() > 0:
 		no_variables_text.visible = false
 	else:
@@ -266,6 +287,8 @@ func _manage_variables(line: String) -> void:
 	
 	if graphed_variable_name == variable_name:
 		graphed_variable_value = float(variable_value)
+	
+	
 	
 func _delete_variable(delete: String) -> void:
 	
@@ -391,3 +414,39 @@ func _on_y_min_changed(text: String) -> void:
 	
 func _on_y_max_changed(text: String) -> void:
 	graph_2d.y_max = float(text)
+
+# Connect button to open the FileDialog
+func _on_export_CSV_button_pressed() -> void:
+	var file_dialog = FileDialog.new()
+	
+	file_dialog.use_native_dialog = true 
+	
+	# Configure the dialog for saving a file
+	file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	file_dialog.access = FileDialog.ACCESS_FILESYSTEM 
+	file_dialog.filters = PackedStringArray(["*.csv ; CSV Files"]) 
+	file_dialog.current_file = "export.csv" 
+	
+	# Connect and show
+	file_dialog.file_selected.connect(_on_file_dialog_file_selected)
+	add_child(file_dialog)
+	file_dialog.popup() # You can just use popup() now since the OS handles sizing
+
+
+# 2. This function runs AFTER the user picks a location and hits "Save"
+func _on_file_dialog_file_selected(path: String) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	
+	if file:
+		for row in CSV_EXPORT:
+			var start_condition := exportStart.text == "" or float(row[0]) > float(exportStart.text)
+			var end_condition := exportEnd.text == "" or float(row[0]) < float(exportEnd.text)
+			
+			if start_condition and end_condition:
+				file.store_csv_line(row)
+			
+		file.close()
+		print("CSV successfully exported to: ", path)
+	else:
+		var error = FileAccess.get_open_error()
+		print("Failed to export CSV. Error code: ", error)
