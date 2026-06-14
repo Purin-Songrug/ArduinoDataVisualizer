@@ -6,6 +6,7 @@ extends Control
 @export var connect_button: Button
 @export var refresh_button: Button
 
+#Default baud rate
 var BAUD_RATE: int = 115200
 var serial: GdSerial
 var is_connected_to_port: bool = false
@@ -24,32 +25,34 @@ var is_connected_to_port: bool = false
 @export var y_min_input: LineEdit
 @export var y_max_input: LineEdit
 
-var graphRightBound := 10.0
-var amountVisible := 10.0
-var dataTimePassedInitialMax := false
+#Graph variables
+var graph_right_bound := 10.0
+var amount_visible := 10.0
+var move_amount := 6.0
+var data_time_passed_initial_max := false
 var data
 
 @export_group("Sidebar")
 @export var sidebar: Panel
-@export var middleResizeButton: Button
-@export var macrosContainer: GridContainer
-@export var macrosCollapseButton: Button
-@export var editMacrosButton: Button
-@export var addMacroButton: Button
-@export var editMacrosContainer: VBoxContainer
-@export var variablesContainer: VBoxContainer
-@export var variablesCollapseButton: Button
-@export var exportContainer: VBoxContainer
-@export var exportCollapseButton: Button
-@export var exportCSVButton: Button
-@export var exportStart: LineEdit
-@export var exportEnd: LineEdit
+@export var middle_resize_button: Button
+@export var macros_container: GridContainer
+@export var macros_collapse_button: Button
+@export var edit_macros_button: Button
+@export var add_macro_button: Button
+@export var edit_macros_container: VBoxContainer
+@export var variables_container: VBoxContainer
+@export var variables_collapse_button: Button
+@export var export_container: VBoxContainer
+@export var export_collapse_button: Button
+@export var export_csv_button: Button
+@export var export_start: LineEdit
+@export var export_end: LineEdit
 
-var sidebarVisible := true
-var macrosVisible := true
-var editMacros := false
-var variablesVisible := true
-var exportVisible := true
+var sidebar_visible := true
+var macros_visible := true
+var edit_macros := false
+var variables_visible := true
+var export_visible := true
 
 const MACRO_BUTTON = preload("uid://dyety4dpsq0b2")
 const MACRO_EDIT = preload("uid://d1vyb0a6uehvp")
@@ -62,7 +65,7 @@ var VARIABLE_INSTANCES: Array
 var graphed_variable_name: String
 var graphed_variable_value: float
 
-#Pre-compile the regex once at the top of the script for maximum performance
+#Pre-compile the regex once at the top of the script
 var packet_regex: RegEx = RegEx.new()
 
 var CSV_EXPORT: Array[Array] = [["Time","Raw Data"]]
@@ -70,6 +73,7 @@ var CSV_PATH := "user://data.csv"
 
 func _ready() -> void:
 	serial = GdSerial.new()
+	
 	_refresh_serial_ports()
 	
 	packet_regex.compile("^\\[\\]([a-zA-Z0-9_]+):(.+)$")
@@ -88,13 +92,13 @@ func _ready() -> void:
 	output_resizer.button_up.connect(_on_output_resizer_button_up)
 	send_button.pressed.connect(_on_send_button_pressed)
 	
-	middleResizeButton.pressed.connect(_on_middle_resize_button_pressed)
-	macrosCollapseButton.pressed.connect(_on_collapse_macros_button_pressed)
-	editMacrosButton.pressed.connect(_on_edit_macros_button_pressed)
-	addMacroButton.pressed.connect(_on_add_macro_button_pressed)
-	exportCSVButton.pressed.connect(_on_export_CSV_button_pressed)
-	variablesCollapseButton.pressed.connect(_on_collapse_variables_button_pressed)
-	exportCollapseButton.pressed.connect(_on_collapse_export_button_pressed)
+	middle_resize_button.pressed.connect(_on_middle_resize_button_pressed)
+	macros_collapse_button.pressed.connect(_on_collapse_macros_button_pressed)
+	edit_macros_button.pressed.connect(_on_edit_macros_button_pressed)
+	add_macro_button.pressed.connect(_on_add_macro_button_pressed)
+	export_csv_button.pressed.connect(_on_export_CSV_button_pressed)
+	variables_collapse_button.pressed.connect(_on_collapse_variables_button_pressed)
+	export_collapse_button.pressed.connect(_on_collapse_export_button_pressed)
 	
 func _refresh_serial_ports() -> void:
 	port_selector.clear()
@@ -113,7 +117,6 @@ func _refresh_serial_ports() -> void:
 		if port_info.has("port_name"):
 			var visual_label = port_info["port_name"]
 			
-			# If you want a descriptive drop-down label for your users:
 			if port_info.has("device_name") and port_info["device_name"] != "":
 				visual_label = port_info["device_name"]
 			
@@ -160,8 +163,10 @@ func _on_connect_toggled() -> void:
 		is_connected_to_port = false
 		connect_button.text = "Connect"
 		output_label.text += "Serial stream safely terminated.\n"
-var ignoreXMover := false
+
+var ignoreXMover := false #Don't allow movement of x axis initially until more data is collected
 var TIME := 0.0
+
 func _process(delta: float) -> void:
 	if is_connected_to_port:
 		# GdSerial non-block-reads data up to the newline delimiter
@@ -180,16 +185,16 @@ func _process(delta: float) -> void:
 		TIME += delta
 		if TIME > graph_2d.x_max and x_axis_mover.value == x_axis_mover.max_value:
 			ignoreXMover = true
-			x_axis_mover.max_value = snappedf(TIME-6.0, 2.0)
-			x_axis_mover.value = snappedf(TIME-6.0, 2.0)
+			x_axis_mover.max_value = snappedf(TIME-move_amount, 2.0)
+			x_axis_mover.value = snappedf(TIME-move_amount, 2.0)
 			
-			graph_2d.x_max += 6.0
-			graphRightBound += 6.0
-			graph_2d.x_min += 6.0
-			dataTimePassedInitialMax = true
+			graph_2d.x_max += move_amount
+			graph_right_bound += move_amount
+			graph_2d.x_min += move_amount
+			data_time_passed_initial_max = true
 		
 		elif TIME > graph_2d.x_max:
-			x_axis_mover.max_value = snappedf(TIME-6.0, 2.0)
+			x_axis_mover.max_value = snappedf(TIME-move_amount, 2.0)
 			
 func _append_to_terminal(incoming_text: String) -> void:
 	output_label.text += incoming_text + "\n"
@@ -198,24 +203,23 @@ func _append_to_terminal(incoming_text: String) -> void:
 	await get_tree().process_frame
 	scroll_container.scroll_vertical = int(output_label.size.y)
 	
-
 func _on_baud_selector_text_changed(new_text: String) -> void:
 	if new_text.is_valid_int():
 		BAUD_RATE = int(new_text)
 	
 func _on_x_axis_mover_value_changed(value: float) -> void:
-	if not ignoreXMover and dataTimePassedInitialMax:
-		graphRightBound = value
+	if not ignoreXMover and data_time_passed_initial_max:
+		graph_right_bound = value
 		
-		# Check if we are moving right or left to avoid plugin clamping
+		# Check if moving right or left to avoid plugin clamping
 		if value > graph_2d.x_min:
-			# Moving Right: Update max first, then min
-			graph_2d.x_max = value + amountVisible
+			#Right
+			graph_2d.x_max = value + amount_visible
 			graph_2d.x_min = value
 		else:
-			# Moving Left: Update min first, then max
+			#Left
 			graph_2d.x_min = value
-			graph_2d.x_max = value + amountVisible
+			graph_2d.x_max = value + amount_visible
 
 	else:
 		ignoreXMover = false
@@ -231,16 +235,13 @@ func _on_output_resizer_button_up() -> void:
 	is_dragging = false
 
 func _manage_variables(line: String, time: float) -> void:
-	#Clean up any hidden whitespace, carriage returns (\r), or newlines (\n)
 	line = line.strip_edges()
 
-	# Validate and extract simultaneously. 
-	# If the line is corrupted or cut in half, the regex will fail completely.
 	var result = packet_regex.search(line)
 	if not result:
-		return # Corrupted data detected! Safely ignore this line.
+		return #Bad data
 		
-	# Grab the clean data from the regex capture groups
+	# Get clean data from the regex capture groups
 	var variable_name: String = result.get_string(1)
 	var variable_value: String = result.get_string(2)
 	var set_text: String = variable_name + ":" + variable_value
@@ -268,7 +269,7 @@ func _manage_variables(line: String, time: float) -> void:
 		TRACKED_VARIABLES_NAMES.append(variable_name)
 		var new = VARIABLE_MONITOR.instantiate()
 		new.get_child(0).text = set_text
-		variablesContainer.add_child(new)
+		variables_container.add_child(new)
 		VARIABLE_INSTANCES.append(new)
 		
 		data_chooser.clear()
@@ -279,16 +280,16 @@ func _manage_variables(line: String, time: float) -> void:
 		graphed_variable_name = data_chooser.get_item_text(1)
 		
 		CSV_EXPORT[0].append(variable_name)
-		
+	
+	#Show no variable dialouge if none
 	if TRACKED_VARIABLES_NAMES.size() > 0:
 		no_variables_text.visible = false
 	else:
 		no_variables_text.visible = true
 	
+	#Update graph
 	if graphed_variable_name == variable_name:
 		graphed_variable_value = float(variable_value)
-	
-	
 	
 func _delete_variable(delete: String) -> void:
 	
@@ -318,21 +319,16 @@ func _get_item_index_by_text(button: OptionButton, text_to_find: String) -> int:
 	return 0 # Not found
 
 func _input(event: InputEvent) -> void:
-	
-	# We use global _input so dragging still works if the mouse moves too fast 
-	# and leaves the button area for a frame.
 	if is_dragging and event is InputEventMouseMotion:
-		# event.relative.y is how many pixels the mouse moved vertically this frame
 		var delta_y = event.relative.y
 		
 		# Calculate what the new height would be
-		# Dragging UP means delta_y is negative, so we subtract it to INCREASE height
 		var new_height = scroll_container.custom_minimum_size.y - delta_y
 		
 		if new_height >= min_height and (graph_2d.size.y > graph_2d.custom_minimum_size.y or event.relative.y>0):
 			scroll_container.custom_minimum_size.y = new_height
 
-	# Safety check: Stop dragging if the mouse is released outside the window
+	# Stop dragging if the mouse is released outside the window
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if not event.pressed:
 			is_dragging = false
@@ -341,64 +337,64 @@ func _on_refresh_button_pressed() -> void:
 	_refresh_serial_ports()
 
 func _on_middle_resize_button_pressed() -> void:
-	if sidebarVisible:
+	if sidebar_visible:
 		sidebar.visible = false
-		sidebarVisible = false
-		middleResizeButton.text = "◀"
+		sidebar_visible = false
+		middle_resize_button.text = "◀"
 	else:
 		sidebar.visible = true
-		sidebarVisible = true
-		middleResizeButton.text = "▶"
+		sidebar_visible = true
+		middle_resize_button.text = "▶"
 
 func _on_collapse_macros_button_pressed() -> void:
-	if macrosVisible:
-		macrosContainer.visible = false
-		macrosVisible = false
-		macrosCollapseButton.text = "▲"
-		editMacros = false
-		editMacrosContainer.visible = false
+	if macros_visible:
+		macros_container.visible = false
+		macros_visible = false
+		macros_collapse_button.text = "▲"
+		edit_macros = false
+		edit_macros_container.visible = false
 	else:
-		macrosContainer.visible = true
-		macrosVisible = true
-		macrosCollapseButton.text = "▼"
+		macros_container.visible = true
+		macros_visible = true
+		macros_collapse_button.text = "▼"
 
 func _on_collapse_variables_button_pressed() -> void:
-	if variablesVisible:
-		variablesContainer.visible = false
-		variablesVisible = false
-		variablesCollapseButton.text = "▲"
+	if variables_visible:
+		variables_container.visible = false
+		variables_visible = false
+		variables_collapse_button.text = "▲"
 	else:
-		variablesContainer.visible = true
-		variablesVisible = true
-		variablesCollapseButton.text = "▼"
+		variables_container.visible = true
+		variables_visible = true
+		variables_collapse_button.text = "▼"
 
 func _on_collapse_export_button_pressed() -> void:
-	if exportVisible:
-		exportContainer.visible = false
-		exportVisible = false
-		exportCollapseButton.text = "▲"
+	if export_visible:
+		export_container.visible = false
+		export_visible = false
+		export_collapse_button.text = "▲"
 	else:
-		exportContainer.visible = true
-		exportVisible = true
-		exportCollapseButton.text = "▼"
+		export_container.visible = true
+		export_visible = true
+		export_collapse_button.text = "▼"
 
 func _on_edit_macros_button_pressed() -> void:
-	if editMacros:
-		editMacrosContainer.visible = false
-		editMacros = false
+	if edit_macros:
+		edit_macros_container.visible = false
+		edit_macros = false
 	else:
-		editMacrosContainer.visible = true
-		editMacros = true
-		macrosContainer.visible = true
-		macrosVisible = true
-		macrosCollapseButton.text = "▼"
+		edit_macros_container.visible = true
+		edit_macros = true
+		macros_container.visible = true
+		macros_visible = true
+		macros_collapse_button.text = "▼"
 
 func _on_add_macro_button_pressed() -> void:
 	var new_macro = MACRO_BUTTON.instantiate()
-	macrosContainer.add_child(new_macro)
+	macros_container.add_child(new_macro)
 	var new_edit = MACRO_EDIT.instantiate()
-	new_edit.macro_container = macrosContainer
-	editMacrosContainer.add_child(new_edit)
+	new_edit.macro_container = macros_container
+	edit_macros_container.add_child(new_edit)
 	
 func _macro_pressed(macro_action) -> void:
 	serial.writeline(str(macro_action))
@@ -430,17 +426,17 @@ func _on_export_CSV_button_pressed() -> void:
 	# Connect and show
 	file_dialog.file_selected.connect(_on_file_dialog_file_selected)
 	add_child(file_dialog)
-	file_dialog.popup() # You can just use popup() now since the OS handles sizing
+	file_dialog.popup()
 
 
-# 2. This function runs AFTER the user picks a location and hits "Save"
+# This function runs AFTER the user picks a location and hits "Save"
 func _on_file_dialog_file_selected(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	
 	if file:
 		for row in CSV_EXPORT:
-			var start_condition := exportStart.text == "" or float(row[0]) > float(exportStart.text)
-			var end_condition := exportEnd.text == "" or float(row[0]) < float(exportEnd.text)
+			var start_condition := export_start.text == "" or float(row[0]) > float(export_start.text)
+			var end_condition := export_end.text == "" or float(row[0]) < float(export_end.text)
 			
 			if start_condition and end_condition:
 				file.store_csv_line(row)

@@ -27,7 +27,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="LabelSettings" id="LabelSettings_tuj7s"]
 font_size = 22
 
-[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "y_min_input", "y_max_input", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton", "exportCSVButton", "exportStart", "exportEnd", "no_variables_text") groups=["Root"]]
+[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "y_min_input", "y_max_input", "sidebar", "middle_resize_button", "macros_container", "macros_collapse_button", "edit_macros_button", "add_macro_button", "edit_macros_container", "variables_container", "variables_collapse_button", "export_container", "export_collapse_button", "export_csv_button", "export_start", "export_end", "no_variables_text") groups=["Root"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -53,19 +53,19 @@ data_chooser = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/
 y_min_input = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/VBoxContainer/Y Axis Min")
 y_max_input = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/VBoxContainer/Y Axis Max")
 sidebar = NodePath("Background/Main VBox/Middle Split/Sidebar Panel")
-middleResizeButton = NodePath("Background/Main VBox/Middle Split/Separator/Middle Resize Button")
-macrosContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros")
-macrosCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Header/Collapse Macros Button")
-editMacrosButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Header/Edit Macros Button")
-addMacroButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Options/Macros Options Header/Add Macro Button")
-editMacrosContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Options")
-variablesContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables")
-variablesCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables Header/Collapse Variables Button2")
-exportContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export")
-exportCollapseButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export Header/Collapse Export Button3")
-exportCSVButton = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Export Button")
-exportStart = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Start Hbox/Start Input")
-exportEnd = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/End Hbox/End Input")
+middle_resize_button = NodePath("Background/Main VBox/Middle Split/Separator/Middle Resize Button")
+macros_container = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros")
+macros_collapse_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Header/Collapse Macros Button")
+edit_macros_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Header/Edit Macros Button")
+add_macro_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Options/Macros Options Header/Add Macro Button")
+edit_macros_container = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros Options")
+variables_container = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables")
+variables_collapse_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables Header/Collapse Variables Button2")
+export_container = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export")
+export_collapse_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export Header/Collapse Export Button3")
+export_csv_button = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Export Button")
+export_start = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/Start Hbox/Start Input")
+export_end = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Export/End Hbox/End Input")
 no_variables_text = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Variables/Label")
 
 [node name="Background" type="PanelContainer" parent="." unique_id=265731959]
