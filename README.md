@@ -23,3 +23,25 @@ A dashboard to send and recieve serial data for Arduinos, ESP32s, and other micr
 
 ![App Screenshot](https://github.com/user-attachments/assets/7e51997d-65c2-42fd-99b2-77d1863069ee)
 
+
+## Usage/Examples
+
+To read a variable in the variable monitor:
+
+```cpp
+value = 43
+Serial.print(F("[]VariableName:"));
+Serial.println(Value);
+```
+
+- Tracks a variable named "VariableName" and gives it a value of 43
+
+The "[]" denotes to track it and the ":" separates the name from the value
+
+It will read any normal println as well:
+
+```cpp
+Serial.println(Value);
+```
+
+- Can graph this when it is set to "Raw Data" and print in the output as well
