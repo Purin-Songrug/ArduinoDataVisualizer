@@ -1,7 +1,7 @@
 
 # Arduino Serial Data Visualizer
 
-A dashboard to send and recieve serial data for Arduinos, ESP32s, and other microcontrollers/serial devices.
+A dashboard to send and receive serial data for Arduinos, ESP32s, and other microcontrollers/serial devices.
 
 
 ## Acknowledgements
