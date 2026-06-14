@@ -26,7 +26,11 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdserial/plugin.cfg", "res://addons/graph_2d/plugin.cfg", "res://addons/tau-plot/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdserial/plugin.cfg", "res://addons/graph_2d/plugin.cfg")
+
+[global_group]
+
+Root=""
 
 [gui]
 

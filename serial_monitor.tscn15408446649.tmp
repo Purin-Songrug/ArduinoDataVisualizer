@@ -27,7 +27,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="LabelSettings" id="LabelSettings_tuj7s"]
 font_size = 22
 
-[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "y_min_input", "y_max_input", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton", "no_variables_text") groups=["Root"]]
+[node name="SerialMonitor" type="Control" unique_id=270121880 node_paths=PackedStringArray("port_selector", "baud_selector", "connect_button", "refresh_button", "output_label", "scroll_container", "output_resizer", "message_input", "send_button", "x_axis_mover", "graph_2d", "data_chooser", "sidebar", "middleResizeButton", "macrosContainer", "macrosCollapseButton", "editMacrosButton", "addMacroButton", "editMacrosContainer", "variablesContainer", "variablesCollapseButton", "exportContainer", "exportCollapseButton", "no_variables_text") groups=["Root"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,8 +50,6 @@ send_button = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/M
 x_axis_mover = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/XAxis Mover")
 graph_2d = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/Graph2D")
 data_chooser = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/VBoxContainer/Graph Options")
-y_min_input = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/VBoxContainer/Y Axis Min")
-y_max_input = NodePath("Background/Main VBox/Middle Split/Graph & Output Panel/MarginContainer/Graph & Output/HBoxContainer/VBoxContainer/Y Axis Max")
 sidebar = NodePath("Background/Main VBox/Middle Split/Sidebar Panel")
 middleResizeButton = NodePath("Background/Main VBox/Middle Split/Separator/Middle Resize Button")
 macrosContainer = NodePath("Background/Main VBox/Middle Split/Sidebar Panel/MarginContainer/Sidebar/VBox Sidebar/Macros")

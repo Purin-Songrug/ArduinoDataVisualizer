@@ -8,9 +8,17 @@ offset_bottom = 112.0
 size_flags_horizontal = 3
 script = ExtResource("1_7xh24")
 
-[node name="Macro Name" type="LineEdit" parent="." unique_id=395542255]
+[node name="Name and Delete Container" type="HBoxContainer" parent="." unique_id=1968464592]
 layout_mode = 2
+
+[node name="Macro Name" type="LineEdit" parent="Name and Delete Container" unique_id=395542255]
+layout_mode = 2
+size_flags_horizontal = 3
 placeholder_text = "Name"
+
+[node name="Delete Button" type="Button" parent="Name and Delete Container" unique_id=954330416]
+layout_mode = 2
+text = "🗑️"
 
 [node name="Macro Action" type="LineEdit" parent="." unique_id=863528863]
 custom_minimum_size = Vector2(0, 31)
@@ -18,6 +26,7 @@ layout_mode = 2
 placeholder_text = "Action"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1590847867]
+visible = false
 layout_mode = 2
 
 [node name="Send Types" type="OptionButton" parent="HBoxContainer" unique_id=1171492814]
@@ -32,17 +41,9 @@ popup/item_2/id = 2
 popup/item_3/text = "Both NL & CR"
 popup/item_3/id = 3
 
-[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer" unique_id=1818845184]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Delete Button" type="Button" parent="HBoxContainer" unique_id=954330416]
-layout_mode = 2
-text = "🗑️"
-
 [node name="HSeparator" type="HSeparator" parent="." unique_id=1412415471]
 layout_mode = 2
 
-[connection signal="text_changed" from="Macro Name" to="." method="_on_macro_name_text_changed"]
+[connection signal="text_changed" from="Name and Delete Container/Macro Name" to="." method="_on_macro_name_text_changed"]
+[connection signal="pressed" from="Name and Delete Container/Delete Button" to="." method="_on_delete_button_pressed"]
 [connection signal="text_changed" from="Macro Action" to="." method="_on_macro_action_text_changed"]
-[connection signal="pressed" from="HBoxContainer/Delete Button" to="." method="_on_delete_button_pressed"]

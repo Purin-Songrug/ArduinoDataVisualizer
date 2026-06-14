@@ -6,3 +6,5 @@
 custom_minimum_size = Vector2(90, 90)
 text = "D"
 script = ExtResource("1_q7aet")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

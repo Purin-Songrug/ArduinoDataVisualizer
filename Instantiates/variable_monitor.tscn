@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cvb3dob0vvbf7"]
+
+[ext_resource type="Script" uid="uid://bc2w8maw1jv15" path="res://Instantiates/variable_monitor.gd" id="1_707tm"]
+
+[node name="Variable Monitor" type="HBoxContainer" unique_id=1077622791]
+offset_right = 178.0
+offset_bottom = 30.0
+script = ExtResource("1_707tm")
+
+[node name="Label" type="Label" parent="." unique_id=2049605105]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Variable: Value"
+
+[node name="Delete Button" type="Button" parent="." unique_id=985778109]
+layout_mode = 2
+text = "🗑️"
+
+[connection signal="pressed" from="Delete Button" to="." method="_on_delete_button_pressed"]

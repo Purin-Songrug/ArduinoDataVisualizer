@@ -3,7 +3,7 @@ extends VBoxContainer
 @export var macro_name: String
 @export var macro_action: String
 
-@onready var macro_name_input: LineEdit = $"Macro Name"
+@onready var macro_name_input: LineEdit = $"Name and Delete Container/Macro Name"
 @onready var macro_action_input: LineEdit = $"Macro Action"
 @onready var send_types_input: OptionButton = $"HBoxContainer/Send Types"
 

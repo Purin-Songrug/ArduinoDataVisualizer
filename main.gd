@@ -14,10 +14,15 @@ var is_connected_to_port: bool = false
 @export var output_label: Label
 @export var scroll_container: ScrollContainer
 @export var output_resizer: Button
+@export var message_input: LineEdit
+@export var send_button: Button
 
 @export_group("Graph")
 @export var x_axis_mover: HScrollBar
 @export var graph_2d: Graph2D
+@export var data_chooser: OptionButton
+@export var y_min_input: LineEdit
+@export var y_max_input: LineEdit
 
 var graphRightBound := 10.0
 var amountVisible := 10.0
@@ -25,7 +30,7 @@ var dataTimePassedInitialMax := false
 var data
 
 @export_group("Sidebar")
-@export var sidebar: ScrollContainer
+@export var sidebar: Panel
 @export var middleResizeButton: Button
 @export var macrosContainer: GridContainer
 @export var macrosCollapseButton: Button
@@ -46,20 +51,36 @@ var exportVisible := true
 const MACRO_BUTTON = preload("uid://dyety4dpsq0b2")
 const MACRO_EDIT = preload("uid://d1vyb0a6uehvp")
 
+@export var no_variables_text: RichTextLabel
+const VARIABLE_MONITOR = preload("uid://cvb3dob0vvbf7")
+var TRACKED_VARIABLES_NAMES: Array[String]
+var VARIABLE_INSTANCES: Array
+
+var graphed_variable_name: String
+var graphed_variable_value: float
+
+#Pre-compile the regex once at the top of the script for maximum performance
+var packet_regex: RegEx = RegEx.new()
+
 func _ready() -> void:
 	serial = GdSerial.new()
 	_refresh_serial_ports()
 	
+	packet_regex.compile("^\\[\\]([a-zA-Z0-9_]+):(.+)$")
 	
-	data = graph_2d.add_plot_item("Data", Color.CORAL, 0.5)
+	data = graph_2d.add_plot_item("", Color.CORAL, 0.5)
 	
 	#Connect signals
 	refresh_button.pressed.connect(_on_refresh_button_pressed)
 	connect_button.pressed.connect(_on_connect_toggled)
 	x_axis_mover.value_changed.connect(_on_x_axis_mover_value_changed)
 	baud_selector.text_changed.connect(_on_baud_selector_text_changed)
+	data_chooser.item_selected.connect(_on_data_chooser_select)
+	y_min_input.text_submitted.connect(_on_y_min_changed)
+	y_max_input.text_submitted.connect(_on_y_max_changed)
 	output_resizer.button_down.connect(_on_output_resizer_button_down)
 	output_resizer.button_up.connect(_on_output_resizer_button_up)
+	send_button.pressed.connect(_on_send_button_pressed)
 	
 	middleResizeButton.pressed.connect(_on_middle_resize_button_pressed)
 	macrosCollapseButton.pressed.connect(_on_collapse_macros_button_pressed)
@@ -140,10 +161,15 @@ func _process(delta: float) -> void:
 		# GdSerial non-block-reads data up to the newline delimiter
 		var raw_data = serial.readline()
 		
-		# If data exists in the transaction buffer, clear line endings and print
-		if raw_data != "":
-			_append_to_terminal(raw_data.strip_edges())
-		data.add_point(Vector2(TIME, float(raw_data.strip_edges())))
+		if graphed_variable_name == "Raw Data":
+			# If data exists in the transaction buffer, clear line endings and print
+			if raw_data != "":
+				_append_to_terminal(raw_data.strip_edges())
+			data.add_point(Vector2(TIME, float(raw_data.strip_edges())))
+		else:
+			data.add_point(Vector2(TIME, graphed_variable_value))
+			_append_to_terminal(str(graphed_variable_value))
+		_manage_variables(raw_data.strip_edges())
 		
 		TIME += delta
 		if TIME > graph_2d.x_max and x_axis_mover.value == x_axis_mover.max_value:
@@ -166,7 +192,7 @@ func _append_to_terminal(incoming_text: String) -> void:
 	await get_tree().process_frame
 	scroll_container.scroll_vertical = int(output_label.size.y)
 	
-var old_text := ""
+
 func _on_baud_selector_text_changed(new_text: String) -> void:
 	if new_text.is_valid_int():
 		BAUD_RATE = int(new_text)
@@ -198,12 +224,81 @@ func _on_output_resizer_button_down() -> void:
 func _on_output_resizer_button_up() -> void:
 	is_dragging = false
 
+func _manage_variables(line: String) -> void:
+	#Clean up any hidden whitespace, carriage returns (\r), or newlines (\n)
+	line = line.strip_edges()
+
+	# Validate and extract simultaneously. 
+	# If the line is corrupted or cut in half, the regex will fail completely.
+	var result = packet_regex.search(line)
+	if not result:
+		return # Corrupted data detected! Safely ignore this line.
+		
+	# Grab the clean data from the regex capture groups
+	var variable_name: String = result.get_string(1)
+	var variable_value: String = result.get_string(2)
+	var set_text: String = variable_name + ":" + variable_value
+
+	# Update or Create UI elements
+	if TRACKED_VARIABLES_NAMES.has(variable_name):
+		var variable_index = TRACKED_VARIABLES_NAMES.find(variable_name)
+		VARIABLE_INSTANCES[variable_index].get_child(0).text = set_text
+	else:
+		print("Registered new variable: ", variable_name) 
+		
+		TRACKED_VARIABLES_NAMES.append(variable_name)
+		var new = VARIABLE_MONITOR.instantiate()
+		new.get_child(0).text = set_text
+		variablesContainer.add_child(new)
+		VARIABLE_INSTANCES.append(new)
+		
+		data_chooser.clear()
+		data_chooser.add_item("Raw Data")
+		for item in TRACKED_VARIABLES_NAMES:
+			data_chooser.add_item(item)
+		data_chooser.selected = 1
+		graphed_variable_name = data_chooser.get_item_text(1)
+		
+	if TRACKED_VARIABLES_NAMES.size() > 0:
+		no_variables_text.visible = false
+	else:
+		no_variables_text.visible = true
+	
+	if graphed_variable_name == variable_name:
+		graphed_variable_value = float(variable_value)
+	
+func _delete_variable(delete: String) -> void:
+	
+	var variable_name : String
+
+	# Split by the colon and take the first part
+	variable_name = delete.split(":")[0]
+	
+	var index = TRACKED_VARIABLES_NAMES.find(variable_name)
+	TRACKED_VARIABLES_NAMES.remove_at(index)
+	VARIABLE_INSTANCES[index].queue_free()
+	VARIABLE_INSTANCES.remove_at(index)
+	
+	var selected_text = data_chooser.get_item_text(data_chooser.selected)
+	data_chooser.clear()
+	data_chooser.add_item("Raw Data")
+	for item in TRACKED_VARIABLES_NAMES:
+		data_chooser.add_item(item)
+	data_chooser.selected = _get_item_index_by_text(data_chooser, selected_text)
+	graphed_variable_name = selected_text
+	
+func _get_item_index_by_text(button: OptionButton, text_to_find: String) -> int:
+	for i in range(button.item_count):
+		if button.get_item_text(i) == text_to_find:
+			return i # Returns the index
+			
+	return 0 # Not found
+
 func _input(event: InputEvent) -> void:
 	
 	# We use global _input so dragging still works if the mouse moves too fast 
 	# and leaves the button area for a frame.
 	if is_dragging and event is InputEventMouseMotion:
-		print(is_dragging)
 		# event.relative.y is how many pixels the mouse moved vertically this frame
 		var delta_y = event.relative.y
 		
@@ -282,3 +377,17 @@ func _on_add_macro_button_pressed() -> void:
 	new_edit.macro_container = macrosContainer
 	editMacrosContainer.add_child(new_edit)
 	
+func _macro_pressed(macro_action) -> void:
+	serial.writeline(str(macro_action))
+
+func _on_send_button_pressed() -> void:
+	serial.writeline(str(message_input.text))
+
+func _on_data_chooser_select(index: int) -> void:
+	graphed_variable_name = data_chooser.get_item_text(index)
+
+func _on_y_min_changed(text: String) -> void:
+	graph_2d.y_min = float(text)
+	
+func _on_y_max_changed(text: String) -> void:
+	graph_2d.y_max = float(text)
